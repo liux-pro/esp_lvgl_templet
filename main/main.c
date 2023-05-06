@@ -15,6 +15,7 @@
 
 
 #include "esp_lvgl_port.h"
+#include <demos/lv_demos.h>
 #include <esp_lcd_panel_vendor.h>
 
 #define LCD_LOG_TAG "LCD"
@@ -22,13 +23,13 @@
 #define LCD_HOST  SPI2_HOST
 
 #define ST7789_LCD_BK_LIGHT_ON_LEVEL  1
-#define ST7789_PIN_NUM_SCLK           4
-#define ST7789_PIN_NUM_MOSI           5
+#define ST7789_PIN_NUM_SCLK           12
+#define ST7789_PIN_NUM_MOSI           11
 #define ST7789_PIN_NUM_MISO           (-1)
-#define ST7789_PIN_NUM_LCD_DC         7
-#define ST7789_PIN_NUM_LCD_RST        6
+#define ST7789_PIN_NUM_LCD_DC         15
+#define ST7789_PIN_NUM_LCD_RST        16
 #define ST7789_PIN_NUM_LCD_CS         (-1)
-#define ST7789_PIN_NUM_BK_LIGHT       15
+#define ST7789_PIN_NUM_BK_LIGHT       14
 
 
 
@@ -65,7 +66,7 @@ void LVGL_CentralButton(void) {
 
 void app_main(){
     const lvgl_port_cfg_t lvgl_cfg = ESP_LVGL_PORT_INIT_CONFIG();
-    esp_err_t err = lvgl_port_init(&lvgl_cfg);
+    lvgl_port_init(&lvgl_cfg);
     ESP_LOGI(LCD_LOG_TAG, "Turn off LCD backlight");
     gpio_config_t bk_gpio_config = {
             .mode = GPIO_MODE_OUTPUT,
@@ -136,8 +137,8 @@ void app_main(){
             .monochrome = false,
             /* Rotation values must be same as used in esp_lcd for initial settings of the screen */
             .rotation = {
-                    .swap_xy = false,
-                    .mirror_x = false,
+                    .swap_xy = true,
+                    .mirror_x = true,
                     .mirror_y = false,
             },
             .flags = {
@@ -148,7 +149,9 @@ void app_main(){
 
     lvgl_port_lock(0);
 
-    LVGL_CentralButton();
+    lv_demo_music();
+//    lv_demo_benchmark_set_max_speed(true);
+//    lv_demo_benchmark();
 
 
     /* Screen operation done -> release for the other task */
